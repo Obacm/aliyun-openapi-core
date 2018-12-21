@@ -1,0 +1,18 @@
+{
+    "name": "obacm/aliyun-openapi-core",
+    "description": "阿里云API核心",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Obacm",
+            "email": "1129627438@qq.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Obacm\\OpenCore\\": "src/"
+        }
+    }
+}
