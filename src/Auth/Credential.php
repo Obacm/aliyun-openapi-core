@@ -42,7 +42,7 @@ class Credential extends AbstractCredential
         if ($this->expiredDate == null) {
             return false;
         }
-        if (strtotime($this->expiredDate)>strtotime(date($this->dateTimeFormat))) {
+        if (strtotime($this->expiredDate) > strtotime(date($this->dateTimeFormat))) {
             return false;
         }
         return true;
@@ -60,8 +60,8 @@ class Credential extends AbstractCredential
 
     public function setExpiredDate($expiredHours)
     {
-        if ($expiredHours>0) {
-            return $this->expiredDate = date($this->dateTimeFormat, strtotime("+".$expiredHours." hour"));
+        if ($expiredHours > 0) {
+            return $this->expiredDate = date($this->dateTimeFormat, strtotime("+" . $expiredHours . " hour"));
         }
     }
 

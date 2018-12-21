@@ -42,7 +42,7 @@ class HttpResponse
 
     public function setStatus($status)
     {
-        $this->status  = $status;
+        $this->status = $status;
     }
 
     public function isSuccess()

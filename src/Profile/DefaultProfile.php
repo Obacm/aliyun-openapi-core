@@ -38,84 +38,81 @@ define("AUTH_TYPE_BEARER_TOKEN", "BEARER_TOKEN");
 
 class DefaultProfile implements IClientProfile
 {
-	private static $profile;
-	private static $endpoints;
-	private static $credential;
-	private static $regionId;
-	private static $acceptFormat;
-	private static $authType;
+    private static $profile;
+    private static $endpoints;
+    private static $credential;
+    private static $regionId;
+    private static $acceptFormat;
+    private static $authType;
 
-	private static $isigner;
-	private static $iCredential;
+    private static $isigner;
+    private static $iCredential;
 
-	private function  __construct($regionId, $credential, $authType = AUTH_TYPE_RAM_AK, $isigner = null)
-	{
-	    self::$regionId = $regionId;
-	    self::$credential = $credential;
-	    self::$authType = $authType;
+    private function __construct($regionId, $credential, $authType = AUTH_TYPE_RAM_AK, $isigner = null)
+    {
+        self::$regionId = $regionId;
+        self::$credential = $credential;
+        self::$authType = $authType;
         self::$isigner = $isigner;
-	}
+    }
 
-	public static function getProfile($regionId, $accessKeyId, $accessSecret, $securityToken = null)
-	{
-		$credential =new Credential($accessKeyId, $accessSecret, $securityToken);
-		self::$profile = new DefaultProfile($regionId, $credential);
-		return self::$profile;
-	}
+    public static function getProfile($regionId, $accessKeyId, $accessSecret, $securityToken = null)
+    {
+        $credential = new Credential($accessKeyId, $accessSecret, $securityToken);
+        self::$profile = new DefaultProfile($regionId, $credential);
+        return self::$profile;
+    }
 
     public static function getRamRoleArnProfile($regionId, $accessKeyId, $accessSecret, $roleArn, $roleSessionName)
     {
-        $credential =new RamRoleArnCredential($accessKeyId, $accessSecret, $roleArn, $roleSessionName);
+        $credential = new RamRoleArnCredential($accessKeyId, $accessSecret, $roleArn, $roleSessionName);
         self::$profile = new DefaultProfile($regionId, $credential, AUTH_TYPE_RAM_ROLE_ARN);
         return self::$profile;
     }
 
     public static function getEcsRamRoleProfile($regionId, $roleName)
     {
-        $credential =new EcsRamRoleCredential($roleName);
+        $credential = new EcsRamRoleCredential($roleName);
         self::$profile = new DefaultProfile($regionId, $credential, AUTH_TYPE_ECS_RAM_ROLE);
         return self::$profile;
     }
 
     public static function getBearerTokenProfile($regionId, $bearerToken)
     {
-        $credential =new BearerTokenCredential($bearerToken);
+        $credential = new BearerTokenCredential($bearerToken);
         self::$profile = new DefaultProfile($regionId, $credential, AUTH_TYPE_BEARER_TOKEN, new BearTokenSigner());
         return self::$profile;
     }
 
-	public function getSigner()
-	{
-		if(null == self::$isigner)
-		{
-			self::$isigner = new ShaHmac1Signer();
-		}
-		return self::$isigner;
-	}
+    public function getSigner()
+    {
+        if (null == self::$isigner) {
+            self::$isigner = new ShaHmac1Signer();
+        }
+        return self::$isigner;
+    }
 
-	public function getRegionId()
-	{
-		return self::$regionId;
-	}
+    public function getRegionId()
+    {
+        return self::$regionId;
+    }
 
-	public function getFormat()
-	{
-		return self::$acceptFormat;
-	}
+    public function getFormat()
+    {
+        return self::$acceptFormat;
+    }
 
-	public function getCredential()
-	{
-		if(null == self::$credential && null != self::$iCredential)
-		{
-			self::$credential = self::$iCredential;
-		}
-		return self::$credential;
-	}
+    public function getCredential()
+    {
+        if (null == self::$credential && null != self::$iCredential) {
+            self::$credential = self::$iCredential;
+        }
+        return self::$credential;
+    }
 
     public function isRamRoleArn()
     {
-        if(self::$authType == AUTH_TYPE_RAM_ROLE_ARN)
-        {
+        if (self::$authType == AUTH_TYPE_RAM_ROLE_ARN) {
             return true;
         }
         return false;
@@ -123,68 +120,59 @@ class DefaultProfile implements IClientProfile
 
     public function isEcsRamRole()
     {
-        if(self::$authType == AUTH_TYPE_ECS_RAM_ROLE)
-        {
+        if (self::$authType == AUTH_TYPE_ECS_RAM_ROLE) {
             return true;
         }
         return false;
     }
 
-	public static function getEndpoints()
-	{
-		if(null == self::$endpoints)
-		{
-			self::$endpoints = EndpointProvider::getEndpoints();
-		}
-		return self::$endpoints;
-	}
+    public static function getEndpoints()
+    {
+        if (null == self::$endpoints) {
+            self::$endpoints = EndpointProvider::getEndpoints();
+        }
+        return self::$endpoints;
+    }
 
-	public static function addEndpoint($endpointName, $regionId, $product, $domain)
-	{
-		if(null == self::$endpoints)
-		{
-			self::$endpoints = self::getEndpoints();
-		}
-		$endpoint = self::findEndpointByName($endpointName);
-		if(null == $endpoint)
-		{
-			self::addEndpoint_($endpointName, $regionId, $product, $domain);
-		}
-		else
-		{
-			self::updateEndpoint($regionId, $product, $domain, $endpoint);
-		}
+    public static function addEndpoint($endpointName, $regionId, $product, $domain)
+    {
+        if (null == self::$endpoints) {
+            self::$endpoints = self::getEndpoints();
+        }
+        $endpoint = self::findEndpointByName($endpointName);
+        if (null == $endpoint) {
+            self::addEndpoint_($endpointName, $regionId, $product, $domain);
+        } else {
+            self::updateEndpoint($regionId, $product, $domain, $endpoint);
+        }
 
-		LocationService::addEndPoint($regionId, $product, $domain);
-	}
+        LocationService::addEndPoint($regionId, $product, $domain);
+    }
 
-	public static function findEndpointByName($endpointName)
-	{
-		foreach (self::$endpoints as $key => $endpoint)
-		{
-			if($endpoint->getName() == $endpointName)
-			{
-				return $endpoint;
-			}
-		}
-	}
+    public static function findEndpointByName($endpointName)
+    {
+        foreach (self::$endpoints as $key => $endpoint) {
+            if ($endpoint->getName() == $endpointName) {
+                return $endpoint;
+            }
+        }
+    }
 
-	private static function addEndpoint_($endpointName,$regionId, $product, $domain)
-	{
-		$regionIds = array($regionId);
-		$productsDomains = array(new ProductDomain($product, $domain));
-		$endpoint = new Endpoint($endpointName, $regionIds, $productsDomains);
-		array_push(self::$endpoints, $endpoint);
-	}
+    private static function addEndpoint_($endpointName, $regionId, $product, $domain)
+    {
+        $regionIds = array($regionId);
+        $productsDomains = array(new ProductDomain($product, $domain));
+        $endpoint = new Endpoint($endpointName, $regionIds, $productsDomains);
+        array_push(self::$endpoints, $endpoint);
+    }
 
-	private static function updateEndpoint($regionId, $product, $domain, $endpoint)
-	{
-		$regionIds = $endpoint->getRegionIds();
-		if(!in_array($regionId,$regionIds))
-		{
-			array_push($regionIds, $regionId);
-			$endpoint->setRegionIds($regionIds);
-		}
+    private static function updateEndpoint($regionId, $product, $domain, $endpoint)
+    {
+        $regionIds = $endpoint->getRegionIds();
+        if (!in_array($regionId, $regionIds)) {
+            array_push($regionIds, $regionId);
+            $endpoint->setRegionIds($regionIds);
+        }
 
         $productDomains = $endpoint->getProductDomains();
         if (null == self::findProductDomainAndUpdate($productDomains, $product, $domain)) {

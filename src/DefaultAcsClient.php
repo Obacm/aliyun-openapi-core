@@ -62,7 +62,7 @@ class DefaultAcsClient implements IAcsClient
     private function doActionImpl($request, $iSigner = null, $credential = null, $autoRetry = true, $maxRetryNumber = 3)
     {
         if (null == $this->iClientProfile && (null == $iSigner || null == $credential
-            || null == $request->getRegionId() || null == $request->getAcceptFormat())) {
+                || null == $request->getRegionId() || null == $request->getAcceptFormat())) {
             throw new ClientException("No active profile found.", "SDK.InvalidProfile");
         }
         if (null == $iSigner) {
@@ -85,12 +85,10 @@ class DefaultAcsClient implements IAcsClient
 
         // Get the domain from the Location Service by speicified `ServiceCode` and `RegionId`.
         $domain = null;
-        if (null != $request->getLocationServiceCode())
-        {
+        if (null != $request->getLocationServiceCode()) {
             $domain = $this->locationService->findProductDomain($request->getRegionId(), $request->getLocationServiceCode(), $request->getLocationEndpointType(), $request->getProduct());
         }
-        if ($domain == null)
-        {
+        if ($domain == null) {
             $domain = EndpointProvider::findProductDomain($request->getRegionId(), $request->getProduct());
         }
 
@@ -103,7 +101,7 @@ class DefaultAcsClient implements IAcsClient
             throw new ClientException($requestUrl, "URLTestFlagIsSet");
         }
 
-        if (count($request->getDomainParameter())>0) {
+        if (count($request->getDomainParameter()) > 0) {
             $httpResponse = HttpHelper::curl($requestUrl, $request->getMethod(), $request->getDomainParameter(), $request->getHeaders());
         } else {
             $httpResponse = HttpHelper::curl($requestUrl, $request->getMethod(), $request->getContent(), $request->getHeaders());
@@ -113,12 +111,12 @@ class DefaultAcsClient implements IAcsClient
         while (500 <= $httpResponse->getStatus() && $autoRetry && $retryTimes < $maxRetryNumber) {
             $requestUrl = $request->composeUrl($iSigner, $credential, $domain);
 
-            if (count($request->getDomainParameter())>0) {
+            if (count($request->getDomainParameter()) > 0) {
                 $httpResponse = HttpHelper::curl($requestUrl, $request->getMethod(), $request->getDomainParameter(), $request->getHeaders());
             } else {
                 $httpResponse = HttpHelper::curl($requestUrl, $request->getMethod(), $request->getContent(), $request->getHeaders());
             }
-            $retryTimes ++;
+            $retryTimes++;
         }
         return $httpResponse;
     }

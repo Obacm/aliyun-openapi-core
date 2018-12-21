@@ -54,7 +54,7 @@ class HttpHelper
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         }
         if (is_array($headers) && 0 < count($headers)) {
-            $httpHeaders =self::getHttpHearders($headers);
+            $httpHeaders = self::getHttpHearders($headers);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $httpHeaders);
         }
         $httpResponse = new HttpResponse();
@@ -66,6 +66,7 @@ class HttpHelper
         curl_close($ch);
         return $httpResponse;
     }
+
     public static function getPostHttpBody($postFildes)
     {
         $content = "";
@@ -74,11 +75,12 @@ class HttpHelper
         }
         return substr($content, 0, -1);
     }
+
     public static function getHttpHearders($headers)
     {
         $httpHeader = array();
         foreach ($headers as $key => $value) {
-            array_push($httpHeader, $key.":".$value);
+            array_push($httpHeader, $key . ":" . $value);
         }
         return $httpHeader;
     }

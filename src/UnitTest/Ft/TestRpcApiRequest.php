@@ -5,6 +5,7 @@
  * Date: 2017/12/19
  * Time: 下午6:39
  */
+
 namespace UnitTest\Ft;
 
 class TestRpcApiRequest extends \RpcAcsRequest
@@ -26,7 +27,7 @@ class TestRpcApiRequest extends \RpcAcsRequest
     public function setQueryParam($queryParam)
     {
         $this->queryParam = $queryParam;
-        $this->queryParameters["QueryParam"]=$queryParam;
+        $this->queryParameters["QueryParam"] = $queryParam;
     }
 
     public function getBodyParam()
@@ -37,6 +38,6 @@ class TestRpcApiRequest extends \RpcAcsRequest
     public function setBodyParam($bodyParam)
     {
         $this->bodyParam = $bodyParam;
-        $this->queryParameters["BodyParam"]=$bodyParam;
+        $this->queryParameters["BodyParam"] = $bodyParam;
     }
 }

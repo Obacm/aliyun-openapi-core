@@ -49,7 +49,8 @@ class EcsRamRoleCredential extends AbstractCredential
         $this->roleName = $roleName;
     }
 
-    public function getSecurityToken() {
+    public function getSecurityToken()
+    {
         return null;
     }
 }

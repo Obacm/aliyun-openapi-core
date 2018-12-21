@@ -35,14 +35,17 @@ class ProductDomain
     {
         return $this->productName;
     }
+
     public function setProductName($productName)
     {
         $this->productName = $productName;
     }
+
     public function getDomainName()
     {
         return $this->domainName;
     }
+
     public function setDomainName($domainName)
     {
         $this->domainName = $domainName;

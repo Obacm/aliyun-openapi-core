@@ -75,7 +75,8 @@ class RamRoleArnCredential extends AbstractCredential
         $this->roleSessionName = $roleSessionName;
     }
 
-    public function getSecurityToken() {
+    public function getSecurityToken()
+    {
         return null;
     }
 }

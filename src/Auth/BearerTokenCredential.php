@@ -49,7 +49,8 @@ class BearerTokenCredential extends AbstractCredential
         $this->bearerToken = $bearerToken;
     }
 
-    public function getSecurityToken() {
+    public function getSecurityToken()
+    {
         return null;
     }
 }

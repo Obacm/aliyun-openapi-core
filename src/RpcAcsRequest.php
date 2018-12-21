@@ -25,7 +25,7 @@ abstract class RpcAcsRequest extends AcsRequest
     private $dateTimeFormat = 'Y-m-d\TH:i:s\Z';
     private $domainParameters = array();
 
-    function  __construct($product, $version, $actionName, $locationServiceCode = null, $locationEndpointType = "openAPI")
+    function __construct($product, $version, $actionName, $locationServiceCode = null, $locationEndpointType = "openAPI")
     {
         parent::__construct($product, $version, $actionName, $locationServiceCode, $locationEndpointType);
         $this->initialize();
@@ -76,13 +76,13 @@ abstract class RpcAcsRequest extends AcsRequest
         }
         $apiParams["Signature"] = $this->computeSignature($apiParams, $credential->getAccessSecret(), $iSigner);
         if (parent::getMethod() == "POST") {
-            $requestUrl = $this->getProtocol()."://". $domain . "/";
+            $requestUrl = $this->getProtocol() . "://" . $domain . "/";
             foreach ($apiParams as $apiParamKey => $apiParamValue) {
                 $this->putDomainParameters($apiParamKey, $apiParamValue);
             }
             return $requestUrl;
         } else {
-            $requestUrl = $this->getProtocol()."://". $domain . "/?";
+            $requestUrl = $this->getProtocol() . "://" . $domain . "/?";
 
             foreach ($apiParams as $apiParamKey => $apiParamValue) {
                 $requestUrl .= "$apiParamKey=" . urlencode($apiParamValue) . "&";
@@ -96,10 +96,10 @@ abstract class RpcAcsRequest extends AcsRequest
         ksort($parameters);
         $canonicalizedQueryString = '';
         foreach ($parameters as $key => $value) {
-            $canonicalizedQueryString .= '&' . $this->percentEncode($key). '=' . $this->percentEncode($value);
+            $canonicalizedQueryString .= '&' . $this->percentEncode($key) . '=' . $this->percentEncode($value);
         }
-        $stringToSign = parent::getMethod().'&%2F&' . $this->percentencode(substr($canonicalizedQueryString, 1));
-        $signature = $iSigner->signString($stringToSign, $accessKeySecret."&");
+        $stringToSign = parent::getMethod() . '&%2F&' . $this->percentencode(substr($canonicalizedQueryString, 1));
+        $signature = $iSigner->signString($stringToSign, $accessKeySecret . "&");
 
         return $signature;
     }

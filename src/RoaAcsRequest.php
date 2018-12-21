@@ -25,11 +25,11 @@ abstract class RoaAcsRequest extends AcsRequest
     protected $uriPattern;
     protected $pathParameters = array();
     private $domainParameters = array();
-    private $dateTimeFormat ="D, d M Y H:i:s \G\M\T";
+    private $dateTimeFormat = "D, d M Y H:i:s \G\M\T";
     private static $headerSeparator = "\n";
     private static $querySeprator = "&";
 
-    function  __construct($product, $version, $actionName, $locationServiceCode = null, $locationEndpointType = "openAPI")
+    function __construct($product, $version, $actionName, $locationServiceCode = null, $locationEndpointType = "openAPI")
     {
         parent::__construct($product, $version, $actionName, $locationServiceCode, $locationEndpointType);
         $this->setVersion($version);
@@ -46,56 +46,57 @@ abstract class RoaAcsRequest extends AcsRequest
     {
         $this->prepareHeader($iSigner, $credential);
 
-        $signString = $this->getMethod().self::$headerSeparator;
+        $signString = $this->getMethod() . self::$headerSeparator;
         if (isset($this->headers["Accept"])) {
-            $signString = $signString.$this->headers["Accept"];
+            $signString = $signString . $this->headers["Accept"];
         }
-        $signString = $signString.self::$headerSeparator;
+        $signString = $signString . self::$headerSeparator;
 
         if (isset($this->headers["Content-MD5"])) {
-            $signString = $signString.$this->headers["Content-MD5"];
+            $signString = $signString . $this->headers["Content-MD5"];
         }
-        $signString = $signString.self::$headerSeparator;
+        $signString = $signString . self::$headerSeparator;
 
         if (isset($this->headers["Content-Type"])) {
-            $signString = $signString.$this->headers["Content-Type"];
+            $signString = $signString . $this->headers["Content-Type"];
         }
-        $signString = $signString.self::$headerSeparator;
+        $signString = $signString . self::$headerSeparator;
 
         if (isset($this->headers["Date"])) {
-            $signString = $signString.$this->headers["Date"];
+            $signString = $signString . $this->headers["Date"];
         }
-        $signString = $signString.self::$headerSeparator;
+        $signString = $signString . self::$headerSeparator;
 
         $uri = $this->replaceOccupiedParameters();
-        $signString = $signString.$this->buildCanonicalHeaders();
+        $signString = $signString . $this->buildCanonicalHeaders();
         $queryString = $this->buildQueryString($uri);
         $signString .= $queryString;
-        $this->headers["Authorization"] = "acs ".$credential->getAccessKeyId().":"
-                .$iSigner->signString($signString, $credential->getAccessSecret());
-        $requestUrl = $this->getProtocol()."://".$domain.$queryString;
+        $this->headers["Authorization"] = "acs " . $credential->getAccessKeyId() . ":"
+            . $iSigner->signString($signString, $credential->getAccessSecret());
+        $requestUrl = $this->getProtocol() . "://" . $domain . $queryString;
         return $requestUrl;
     }
 
-    private function concatQueryString() {
-        $sortMap  = $this->queryParameters;
-        if(null == $sortMap || count($sortMap) == 0){
+    private function concatQueryString()
+    {
+        $sortMap = $this->queryParameters;
+        if (null == $sortMap || count($sortMap) == 0) {
             return "";
         }
-        $queryString ="";
+        $queryString = "";
         ksort($sortMap);
         foreach ($sortMap as $sortMapKey => $sortMapValue) {
-            $queryString = $queryString.$sortMapKey;
+            $queryString = $queryString . $sortMapKey;
             if (isset($sortMapValue)) {
-                $queryString = $queryString."=".urlencode($sortMapValue);
+                $queryString = $queryString . "=" . urlencode($sortMapValue);
             }
             $queryString .= self::$querySeprator;
         }
 
         if (count($sortMap) > 0) {
-            $queryString = substr($queryString, 0, strlen($queryString)-1);
+            $queryString = substr($queryString, 0, strlen($queryString) - 1);
         }
-        return '?'.$queryString;
+        return '?' . $queryString;
     }
 
     private function prepareHeader($iSigner, $credential)
@@ -128,7 +129,7 @@ abstract class RoaAcsRequest extends AcsRequest
     {
         $result = $this->uriPattern;
         foreach ($this->pathParameters as $pathParameterKey => $apiParameterValue) {
-            $target = "[".$pathParameterKey."]";
+            $target = "[" . $pathParameterKey . "]";
             $result = str_replace($target, $apiParameterValue, $result);
         }
         return $result;
@@ -146,7 +147,7 @@ abstract class RoaAcsRequest extends AcsRequest
         ksort($sortMap);
         $headerString = "";
         foreach ($sortMap as $sortMapKey => $sortMapValue) {
-            $headerString = $headerString.$sortMapKey.":".$sortMapValue.self::$headerSeparator;
+            $headerString = $headerString . $sortMapKey . ":" . $sortMapValue . self::$headerSeparator;
         }
         return $headerString;
     }
@@ -157,7 +158,7 @@ abstract class RoaAcsRequest extends AcsRequest
         $uriParts = array();
         if (null != $queIndex) {
             array_push($uriParts, substr($uri, 0, $queIndex));
-            array_push($uriParts, substr($uri, $queIndex+1));
+            array_push($uriParts, substr($uri, $queIndex + 1));
         } else {
             array_push($uriParts, $uri);
         }
@@ -167,24 +168,24 @@ abstract class RoaAcsRequest extends AcsRequest
     private function buildQueryString($uri)
     {
         $uriParts = $this->splitSubResource($uri);
-        $sortMap  = $this->queryParameters;
+        $sortMap = $this->queryParameters;
         if (isset($uriParts[1])) {
             $sortMap[$uriParts[1]] = null;
         }
         $queryString = $uriParts[0];
         if (count($uriParts)) {
-            $queryString = $queryString."?";
+            $queryString = $queryString . "?";
         }
         ksort($sortMap);
         foreach ($sortMap as $sortMapKey => $sortMapValue) {
-            $queryString = $queryString.$sortMapKey;
+            $queryString = $queryString . $sortMapKey;
             if (isset($sortMapValue)) {
-                $queryString = $queryString."=".$sortMapValue;
+                $queryString = $queryString . "=" . $sortMapValue;
             }
-            $queryString = $queryString.self::$querySeprator;
+            $queryString = $queryString . self::$querySeprator;
         }
         if (0 < count($sortMap)) {
-            $queryString = substr($queryString, 0, strlen($queryString)-1);
+            $queryString = substr($queryString, 0, strlen($queryString) - 1);
         }
         return $queryString;
     }
