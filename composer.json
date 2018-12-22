@@ -13,6 +13,9 @@
     "autoload": {
         "psr-4": {
             "Obacm\\OpenCore\\": "src/"
-        }
+        },
+        "files": [
+            "src/Config.php"
+        ]
     }
 }
